@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NotesMonitor — Features & User Guide</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #f0fdfa;
+      --surface: #ffffff;
+      --border: #99f6e4;
+      --text: #0f172a;
+      --muted: #5eead4;
+      --admin: #0d9488;
+      --admin-light: #ccfbf1;
+      --student: #0f766e;
+      --student-light: #ccfbf1;
+      --accent: #0d9488;
+      --code-bg: #f0fdfa;
+      --note-bg: #f0fdf4;
+      --note-border: #22c55e;
+      --shadow: 0 1px 3px rgba(13,148,136,.10), 0 4px 16px rgba(13,148,136,.07);
+      --radius: 10px;
+      --sidebar-w: 268px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.7;
+      font-size: 15px;
+    }
+
+    /* ── LAYOUT ── */
+    .page { display: flex; min-height: 100vh; }
+
+    /* ── SIDEBAR ── */
+    .sidebar {
+      width: var(--sidebar-w);
+      min-width: var(--sidebar-w);
+      background: #134e4a;
+      border-right: none;
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 28px 0 40px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sidebar-logo {
+      padding: 0 24px 24px;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+      margin-bottom: 20px;
+    }
+
+    .sidebar-logo .logo-mark {
+      width: 38px; height: 38px;
+      background: #0d9488;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .sidebar-logo .logo-mark svg { width: 20px; height: 20px; fill: #fff; }
+
+    .sidebar-logo h1 { font-size: 15px; font-weight: 700; color: #fff; line-height: 1.2; }
+    .sidebar-logo p { font-size: 11.5px; color: #5eead4; margin-top: 2px; }
+
+    .nav-section { padding: 0 16px; margin-bottom: 6px; }
+
+    .nav-label {
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: #5eead4;
+      padding: 8px 8px 4px;
+      opacity: .7;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 7px 10px;
+      border-radius: 7px;
+      color: rgba(204,251,241,.65);
+      font-size: 13.5px;
+      font-weight: 500;
+      text-decoration: none;
+      transition: background .15s, color .15s;
+      cursor: pointer;
+    }
+
+    .nav-item:hover, .nav-item.active {
+      background: #0d9488;
+      color: #fff;
+    }
+
+    .nav-item svg { width: 15px; height: 15px; flex-shrink: 0; opacity: .7; }
+    .nav-item:hover svg, .nav-item.active svg { opacity: 1; }
+
+    .nav-item.sub { padding-left: 34px; font-size: 13px; font-weight: 400; }
+
+    /* ── MAIN ── */
+    .main {
+      flex: 1;
+      min-width: 0;
+      padding: 48px 56px 80px;
+      max-width: 860px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      background: linear-gradient(135deg, #134e4a 0%, #0d9488 100%);
+      border-radius: 16px;
+      padding: 40px 44px;
+      color: #fff;
+      margin-bottom: 48px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 240px; height: 240px;
+      background: radial-gradient(circle, rgba(45,212,191,.18) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: -60px; left: 30%;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(20,184,166,.12) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.28);
+      border-radius: 100px;
+      padding: 4px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: .04em;
+      margin-bottom: 16px;
+    }
+
+    .hero h1 { font-size: 28px; font-weight: 800; line-height: 1.25; margin-bottom: 12px; color: #fff; }
+    .hero p { font-size: 15.5px; color: rgba(255,255,255,.88); max-width: 540px; line-height: 1.6; }
+
+    .hero .roles {
+      display: flex;
+      gap: 12px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+
+    .hero .role-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,.15);
+      border: 1px solid rgba(255,255,255,.25);
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-size: 13.5px;
+      font-weight: 600;
+    }
+
+    .hero .role-pill svg { width: 16px; height: 16px; }
+
+    /* ── SECTIONS ── */
+    section { margin-bottom: 56px; }
+
+    h2.section-title {
+      font-size: 21px;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 20px;
+      padding-bottom: 12px;
+      border-bottom: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h2.section-title .icon {
+      width: 32px; height: 32px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    h2.section-title .icon svg { width: 17px; height: 17px; }
+
+    h2.section-title .icon.admin-icon { background: var(--admin-light); }
+    h2.section-title .icon.admin-icon svg { color: var(--admin); }
+    h2.section-title .icon.student-icon { background: var(--student-light); }
+    h2.section-title .icon.student-icon svg { color: var(--student); }
+    h2.section-title .icon.neutral-icon { background: #ccfbf1; }
+    h2.section-title .icon.neutral-icon svg { color: #0d9488; }
+
+    h3.subsection {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 32px 0 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h3.subsection::before {
+      content: '';
+      display: inline-block;
+      width: 4px; height: 18px;
+      background: var(--accent);
+      border-radius: 4px;
+    }
+
+    h4.sub-subsection {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text);
+      margin: 24px 0 8px;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      font-size: 11.5px;
+      color: var(--muted);
+    }
+
+    p { margin-bottom: 12px; color: #0f4f4a; }
+
+    /* ── STEP CARDS ── */
+    .steps { display: flex; flex-direction: column; gap: 8px; margin: 14px 0; }
+
+    .step {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      background: var(--surface);
+      border: 1px solid #b2f5ea;
+      border-radius: var(--radius);
+      padding: 14px 16px;
+    }
+
+    .step-num {
+      width: 26px; height: 26px;
+      min-width: 26px;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      margin-top: 1px;
+    }
+
+    .step-body { flex: 1; }
+    .step-body strong { color: var(--text); }
+
+    /* ── BULLET LIST ── */
+    ul.feature-list {
+      list-style: none;
+      margin: 10px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    ul.feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: #0f4f4a;
+    }
+
+    ul.feature-list li::before {
+      content: '';
+      width: 6px; height: 6px;
+      min-width: 6px;
+      background: var(--accent);
+      border-radius: 50%;
+      margin-top: 8px;
+    }
+
+    /* ── CALLOUT / NOTE ── */
+    .callout {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+      background: #f0fdfa;
+      border-left: 4px solid #0d9488;
+      border-radius: 0 var(--radius) var(--radius) 0;
+      padding: 14px 16px;
+      margin: 16px 0;
+      color: #115e59;
+      font-size: 14px;
+    }
+
+    .callout svg { width: 18px; height: 18px; flex-shrink: 0; margin-top: 1px; color: #0d9488; }
+
+    /* ── CREDENTIALS CARD ── */
+    .creds-card {
+      background: #0d2b28;
+      border-radius: var(--radius);
+      padding: 18px 22px;
+      margin: 14px 0;
+      font-family: 'Cascadia Code', 'Fira Code', 'Courier New', monospace;
+      font-size: 13.5px;
+    }
+
+    .creds-card .creds-title {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: #5eead4;
+      margin-bottom: 12px;
+    }
+
+    .creds-row { display: flex; gap: 12px; align-items: center; margin-bottom: 6px; }
+    .creds-row:last-child { margin-bottom: 0; }
+    .creds-label { color: #94a3b8; min-width: 80px; }
+    .creds-value { color: #a5f3fc; }
+
+    /* ── INLINE CODE ── */
+    code {
+      background: #ccfbf1;
+      color: #0f766e;
+      padding: 2px 6px;
+      border-radius: 5px;
+      font-family: 'Cascadia Code', 'Fira Code', 'Courier New', monospace;
+      font-size: 13px;
+    }
+
+    /* ── TABLES ── */
+    .table-wrap { overflow-x: auto; margin: 14px 0; border-radius: var(--radius); box-shadow: var(--shadow); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: var(--surface);
+      font-size: 14px;
+    }
+
+    thead { background: #f0fdfa; }
+
+    th {
+      padding: 11px 16px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      color: #0f766e;
+      border-bottom: 1px solid #99f6e4;
+    }
+
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid #ccfbf1;
+      color: #134e4a;
+      vertical-align: middle;
+    }
+
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f0fdfa; }
+
+    td:not(:first-child) { text-align: center; }
+
+    .check { color: #0d9488; font-size: 16px; font-weight: 700; }
+    .cross { color: #b2f5ea; font-size: 16px; }
+
+    /* ── INFO CARD GRID ── */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+      margin: 16px 0;
+    }
+
+    .info-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+      box-shadow: var(--shadow);
+    }
+
+    .info-card .card-icon {
+      width: 38px; height: 38px;
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 12px;
+    }
+
+    .info-card .card-icon svg { width: 20px; height: 20px; }
+
+    .info-card h4 { font-size: 14px; font-weight: 700; margin-bottom: 5px; color: #134e4a; }
+    .info-card p { font-size: 13px; color: #0f766e; margin: 0; }
+
+    /* ── LOCATION BADGE ── */
+    .location {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #ccfbf1;
+      color: #0d9488;
+      border-radius: 100px;
+      padding: 3px 12px;
+      font-size: 12.5px;
+      font-weight: 600;
+      margin-bottom: 14px;
+    }
+
+    .location svg { width: 13px; height: 13px; }
+
+    .location.student-loc {
+      background: #ccfbf1;
+      color: #0f766e;
+    }
+
+    /* ── FORMATS GRID ── */
+    .format-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 10px 0 14px;
+    }
+
+    .format-tag {
+      background: #ccfbf1;
+      border: 1px solid #99f6e4;
+      border-radius: 6px;
+      padding: 4px 11px;
+      font-size: 13px;
+      font-family: 'Cascadia Code', monospace;
+      color: #0d9488;
+      font-weight: 600;
+    }
+
+    .format-tag.video {
+      background: #f0fdfa;
+      border-color: #5eead4;
+      color: #0f766e;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      margin-top: 60px;
+      padding-top: 24px;
+      border-top: 1px solid #99f6e4;
+      color: #0f766e;
+      font-size: 13px;
+    }
+
+    hr.divider {
+      border: none;
+      border-top: 1px solid #99f6e4;
+      margin: 36px 0;
+    }
+
+    /* ── SCROLLBAR ── */
+    .sidebar::-webkit-scrollbar { width: 4px; }
+    .sidebar::-webkit-scrollbar-track { background: transparent; }
+    .sidebar::-webkit-scrollbar-thumb { background: #0d9488; border-radius: 4px; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      .sidebar { display: none; }
+      .main { padding: 32px 24px 60px; max-width: 100%; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ── SIDEBAR ── -->
+  <nav class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-mark">
+        <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14a2 2 0 002 2h14a2 2 0 002-2V5a2 2 0 00-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/></svg>
+      </div>
+      <h1>NotesMonitor</h1>
+      <p>Features &amp; User Guide</p>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Overview</div>
+      <a class="nav-item" href="#user-roles">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/></svg>
+        User Roles
+      </a>
+      <a class="nav-item" href="#getting-started">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+        Getting Started
+      </a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Admin</div>
+      <a class="nav-item" href="#admin-features">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        Dashboard
+      </a>
+      <a class="nav-item sub" href="#student-management">Student Management</a>
+      <a class="nav-item sub" href="#group-management">Group Management</a>
+      <a class="nav-item sub" href="#folder-management">Folder Management</a>
+      <a class="nav-item sub" href="#reports">Reports</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Student</div>
+      <a class="nav-item" href="#student-features">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.34C18 2.54 16.46 1 14.34 1c-1.3 0-2.43.62-3.14 1.57L12 3.34l-.2-.77C11.07 1.62 9.96 1 8.66 1 6.54 1 5 2.54 5 4.66c0 .46.1.9.18 1.34H3c-1.1 0-2 .9-2 2v13c0 1.1.9 2 2 2h17c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z"/></svg>
+        Student Dashboard
+      </a>
+      <a class="nav-item sub" href="#viewing-folder">Viewing a Folder</a>
+      <a class="nav-item sub" href="#downloading">Downloading Files</a>
+      <a class="nav-item sub" href="#profile">Profile</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-label">Reference</div>
+      <a class="nav-item" href="#access-control">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+        Access Control
+      </a>
+    </div>
+  </nav>
+
+  <!-- ── MAIN ── -->
+  <main class="main">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="badge">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+        User Guide
+      </div>
+      <h1>NotesMonitor</h1>
+      <p>A notes distribution platform for educational institutions. Admins organize study materials into date-labeled folders and control access through student groups.</p>
+      <div class="roles">
+        <div class="role-pill">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+          Admin
+        </div>
+        <div class="role-pill">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg>
+          Student
+        </div>
+      </div>
+    </div>
+
+    <!-- USER ROLES -->
+    <section id="user-roles">
+      <h2 class="section-title">
+        <span class="icon neutral-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor" style="color:#0d9488"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        </span>
+        User Roles
+      </h2>
+      <div class="card-grid">
+        <div class="info-card">
+          <div class="card-icon" style="background:var(--admin-light)">
+            <svg viewBox="0 0 24 24" fill="currentColor" style="color:var(--admin)"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"/></svg>
+          </div>
+          <h4>Admin</h4>
+          <p>Full platform control — manages students, groups, folders, and analytics.</p>
+        </div>
+        <div class="info-card">
+          <div class="card-icon" style="background:var(--student-light)">
+            <svg viewBox="0 0 24 24" fill="currentColor" style="color:var(--student)"><path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg>
+          </div>
+          <h4>Student</h4>
+          <p>Views and downloads materials from folders assigned to their groups.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- GETTING STARTED -->
+    <section id="getting-started">
+      <h2 class="section-title">
+        <span class="icon neutral-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor" style="color:#0d9488"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+        </span>
+        Getting Started
+      </h2>
+
+      <h3 class="subsection" id="admin-login">Admin Login</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body">Navigate to <code>/admin/login</code>.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body">Enter the admin email and password. Default credentials are shown below — change them after first login.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body">Click <strong>Login</strong>. You will be redirected to the Admin Dashboard.</div></div>
+      </div>
+    
+      <h3 class="subsection" id="student-registration">Student Registration</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body">Navigate to <code>/login</code> and switch to the <strong>Register</strong> tab.</div></div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            Fill in the form:
+            <ul class="feature-list" style="margin-top:8px">
+              <li><strong>Name</strong> — your full name (2–100 characters)</li>
+              <li><strong>Mobile</strong> — 10-digit Indian number (must start with 6–9)</li>
+              <li><strong>Email</strong> — a valid email address</li>
+              <li><strong>Address</strong> — optional</li>
+              <li><strong>Password</strong> — at least 6 characters</li>
+            </ul>
+          </div>
+        </div>
+        <div class="step"><div class="step-num">3</div><div class="step-body">Click <strong>Register</strong>.</div></div>
+      </div>
+      <div class="callout">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        Your account is created with <strong>Pending</strong> status. You cannot view study materials until an admin approves your account.
+      </div>
+
+      <h3 class="subsection" id="student-login">Student Login</h3>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body">Navigate to <code>/login</code> (the <strong>Login</strong> tab is shown by default).</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body">Enter your <strong>mobile number</strong> and <strong>password</strong>.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body">Click <strong>Login</strong>.</div></div>
+      </div>
+      <div class="callout">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        If your account is still pending or rejected, you will see a status message on your dashboard instead of folders.
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ADMIN FEATURES -->
+    <section id="admin-features">
+      <h2 class="section-title">
+        <span class="icon admin-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor" style="color:var(--admin)"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+        </span>
+        Admin Features
+      </h2>
+
+      <p>The Admin Dashboard shows an at-a-glance overview of the platform and auto-refreshes every 60 seconds.</p>
+
+      <div class="card-grid" style="grid-template-columns: repeat(auto-fill, minmax(160px, 1fr))">
+        <div class="info-card">
+          <div class="card-icon" style="background:#ccfbf1"><svg viewBox="0 0 24 24" fill="currentColor" style="color:#0d9488;width:18px;height:18px"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></div>
+          <h4>Students</h4>
+          <p>By status: Active / Pending / Rejected</p>
+        </div>
+        <div class="info-card">
+          <div class="card-icon" style="background:#ccfbf1"><svg viewBox="0 0 24 24" fill="currentColor" style="color:#0f766e;width:18px;height:18px"><path d="M20 6h-2.18c.07-.44.18-.88.18-1.34C18 2.54 16.46 1 14.34 1c-1.3 0-2.43.62-3.14 1.57L12 3.34l-.2-.77C11.07 1.62 9.96 1 8.66 1 6.54 1 5 2.54 5 4.66c0 .46.1.9.18 1.34H3c-1.1 0-2 .9-2 2v13c0 1.1.9 2 2 2h17c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2z"/></svg></div>
+          <h4>Folders</h4>
+          <p>Total folders created</p>
+        </div>
+        <div class="info-card">
+          <div class="card-icon" style="background:#f0fdfa"><svg viewBox="0 0 24 24" fill="currentColor" style="color:#0d9488;width:18px;height:18px"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg></div>
+          <h4>Groups</h4>
+          <p>Total groups</p>
+        </div>
+        <div class="info-card">
+          <div class="card-icon" style="background:#ccfbf1"><svg viewBox="0 0 24 24" fill="currentColor" style="color:#134e4a;width:18px;height:18px"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg></div>
+          <h4>Downloads</h4>
+          <p>Total tracked downloads</p>
+        </div>
+      </div>
+
+      <!-- STUDENT MANAGEMENT -->
+      <h3 class="subsection" id="student-management">Student Management</h3>
+      <span class="location"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg> Sidebar → Students</span>
+
+      <p>Lists all registered students. Filter and search, then approve or reject registrations.</p>
+
+      <h4 class="sub-subsection">Searching &amp; Filtering</h4>
+      <ul class="feature-list">
+        <li>Search by name, mobile number, or email.</li>
+        <li>Filter by status: All / Pending / Active / Rejected.</li>
+        <li>Results paginate at 20 per page.</li>
+      </ul>
+
+      <h4 class="sub-subsection">Approving a Student</h4>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body">Filter by <em>Pending</em> to find new registrations.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body">Click <strong>Approve</strong>. Status changes to <em>Active</em> and an email notification is sent.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body">Assign the student to one or more groups so they can access materials.</div></div>
+      </div>
+
+      <h4 class="sub-subsection">Rejecting a Student</h4>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body">Click <strong>Reject</strong> next to the student.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body">Status changes to <em>Rejected</em> and an email notification is sent. Rejected students can log in but cannot view folders.</div></div>
+      </div>
+      <p>You can change a student's status (Active ↔ Pending ↔ Rejected) at any time.</p>
+
+      <!-- GROUP MANAGEMENT -->
+      <h3 class="subsection" id="group-management">Group Management</h3>
+      <span class="location"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg> Sidebar → Groups</span>
+
+      <p>Groups link students to folders. A student can belong to multiple groups; a folder can be assigned to multiple groups.</p>
+
+      <h4 class="sub-subsection">Creating a Group</h4>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body">Click <strong>Create Group</strong>.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body">Enter a <strong>Name</strong> (required) and an optional <strong>Description</strong>.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body">Click <strong>Save</strong>.</div></div>
+      </div>
+
+      <h4 class="sub-subsection">Managing Students in a Group</h4>
+      <ul class="feature-list">
+        <li>Click <strong>Manage Students</strong> on a group row to open the student assignment modal.</li>
+        <li>Select active students and click <strong>Add Selected</strong>.</li>
+        <li>Remove a student by clicking the remove icon next to their name in the modal.</li>
+      </ul>
+
+      <h4 class="sub-subsection">Editing / Deleting a Group</h4>
+      <ul class="feature-list">
+        <li>Click the <strong>edit icon</strong> to update the name or description.</li>
+        <li>Click the <strong>delete icon</strong> and confirm. Students lose access to folders that were only assigned to the deleted group.</li>
+      </ul>
+
+      <!-- FOLDER MANAGEMENT -->
+      <h3 class="subsection" id="folder-management">Folder Management</h3>
+      <span class="location"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg> Sidebar → Folders</span>
+
+      <p>Folders are the primary containers for study materials. Each folder has a name, a date, files, and assigned groups.</p>
+
+      <h4 class="sub-subsection">Creating a Folder</h4>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body">Click <strong>Create Folder</strong>.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body">Enter a <strong>Folder Name</strong>, a <strong>Date</strong> in <code>YYYY-MM-DD</code> format, and optionally assign groups.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body">Click <strong>Save</strong>. The folder appears in the grid.</div></div>
+      </div>
+
+      <h4 class="sub-subsection">Uploading Files</h4>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body">Open a folder and drag-and-drop files onto the upload area, or click to browse.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body">A progress bar shows upload status. Files are stored on Cloudinary CDN.</div></div>
+      </div>
+      <p>Supported formats:</p>
+      <div class="format-grid">
+        <span class="format-tag">JPG</span>
+        <span class="format-tag">PNG</span>
+        <span class="format-tag">WEBP</span>
+        <span class="format-tag video">MP4</span>
+        <span class="format-tag video">MOV</span>
+      </div>
+      <p style="color:var(--muted);font-size:13.5px">Maximum <strong>100 MB per file</strong>, up to <strong>20 files per upload batch</strong>.</p>
+
+      <h4 class="sub-subsection">Assigning a Folder to Groups</h4>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body">On the folder card, click <strong>Assign Groups</strong>.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body">Select one or more groups and click <strong>Save</strong>. Only students in those groups can see the folder.</div></div>
+      </div>
+      <p>To make a folder inaccessible, remove all group assignments.</p>
+
+      <h4 class="sub-subsection">Other Folder Actions</h4>
+      <ul class="feature-list">
+        <li><strong>Preview</strong> — click any image thumbnail to open a full-screen modal; videos preview inline.</li>
+        <li><strong>Download ZIP</strong> — click <em>Download ZIP</em> on a folder card to stream all files as a single archive.</li>
+        <li><strong>Delete a file</strong> — hover over a thumbnail and click the delete icon. The file is permanently removed from storage.</li>
+        <li><strong>Delete a folder</strong> — click the delete icon on the folder card and confirm. All files are permanently deleted from Cloudinary.</li>
+      </ul>
+
+      <!-- REPORTS -->
+      <h3 class="subsection" id="reports">Reports</h3>
+      <span class="location"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M3 13h2v-2H3v2zm0 4h2v-2H3v2zm0-8h2V7H3v2zm4 4h14v-2H7v2zm0 4h14v-2H7v2zM7 7v2h14V7H7z"/></svg> Sidebar → Reports</span>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Section</th><th style="text-align:left">Details</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><strong>Overview</strong></td><td style="text-align:left">Total students by status, folders, groups, and downloads</td></tr>
+            <tr><td><strong>Group Stats</strong></td><td style="text-align:left">Each group with its current student count</td></tr>
+            <tr><td><strong>Top Folders</strong></td><td style="text-align:left">Folders ranked by number of downloads</td></tr>
+            <tr><td><strong>Recent Downloads</strong></td><td style="text-align:left">The 15 most recent download events (student, folder, type, timestamp)</td></tr>
+            <tr><td><strong>Recent Folders</strong></td><td style="text-align:left">The 5 most recently created folders</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- STUDENT FEATURES -->
+    <section id="student-features">
+      <h2 class="section-title">
+        <span class="icon student-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor" style="color:var(--student)"><path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82zM12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/></svg>
+        </span>
+        Student Features
+      </h2>
+
+      <!-- STUDENT DASHBOARD -->
+      <h3 class="subsection" id="student-dashboard">Student Dashboard</h3>
+      <span class="location student-loc"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg> Route: /dashboard</span>
+
+      <p>After logging in, students see a grid of all folders they are authorized to view based on their assigned groups.</p>
+      <ul class="feature-list">
+        <li>Each card shows the folder <strong>name</strong>, <strong>date</strong>, number of <strong>images</strong>, and number of <strong>videos</strong>.</li>
+        <li>Use the <strong>search bar</strong> to filter folders by name.</li>
+        <li>Click a folder card to open it.</li>
+      </ul>
+      <div class="callout">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        If your account is Pending or Rejected, a status message is shown instead of folders. Contact your admin to get approved or re-activated.
+      </div>
+
+      <!-- VIEWING A FOLDER -->
+      <h3 class="subsection" id="viewing-folder">Viewing a Folder</h3>
+      <span class="location student-loc"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg> Route: /folder/:folderId</span>
+
+      <ul class="feature-list">
+        <li><strong>Images</strong> are displayed as a thumbnail grid.</li>
+        <li><strong>Videos</strong> are listed below the images.</li>
+        <li>Click any thumbnail or video to open a <strong>full-screen preview modal</strong> where you can navigate between files.</li>
+      </ul>
+
+      <!-- DOWNLOADING -->
+      <h3 class="subsection" id="downloading">Downloading Files</h3>
+
+      <h4 class="sub-subsection">Individual File</h4>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body">Hover over an image thumbnail or a video item.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body">Click the <strong>Download</strong> icon. The file downloads directly from Cloudinary.</div></div>
+        <div class="step"><div class="step-num">3</div><div class="step-body">The download is logged for admin analytics.</div></div>
+      </div>
+
+      <h4 class="sub-subsection">Entire Folder as ZIP</h4>
+      <div class="steps">
+        <div class="step"><div class="step-num">1</div><div class="step-body">On the Folder View page, click <strong>Download All as ZIP</strong>.</div></div>
+        <div class="step"><div class="step-num">2</div><div class="step-body">The backend packages all files into a ZIP and streams it to your browser. This download is also tracked.</div></div>
+      </div>
+
+      <!-- PROFILE -->
+      <h3 class="subsection" id="profile">Profile</h3>
+      <span class="location student-loc"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/></svg> Route: /profile</span>
+
+      <ul class="feature-list">
+        <li>View your <strong>Name</strong>, <strong>Mobile</strong>, <strong>Email</strong>, and <strong>Address</strong>.</li>
+        <li>See your <strong>Assigned Groups</strong> — this determines which folders are visible to you.</li>
+      </ul>
+      <div class="callout">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/></svg>
+        Profile editing is not available from this page. Contact your admin to update your details or group assignment.
+      </div>
+    </section>
+
+    <hr class="divider" />
+
+    <!-- ACCESS CONTROL -->
+    <section id="access-control">
+      <h2 class="section-title">
+        <span class="icon neutral-icon">
+          <svg viewBox="0 0 24 24" fill="currentColor" style="color:#0d9488"><path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/></svg>
+        </span>
+        Access Control Summary
+      </h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Action</th>
+              <th>Admin</th>
+              <th>Student</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Login</td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+            <tr><td>View own profile</td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+            <tr><td>View folders (assigned groups only)</td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+            <tr><td>Download files</td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+            <tr><td>Download folder as ZIP</td><td><span class="check">✓</span></td><td><span class="check">✓</span></td></tr>
+            <tr><td>Approve / reject students</td><td><span class="check">✓</span></td><td><span class="cross">—</span></td></tr>
+            <tr><td>Create / edit / delete groups</td><td><span class="check">✓</span></td><td><span class="cross">—</span></td></tr>
+            <tr><td>Add / remove students from groups</td><td><span class="check">✓</span></td><td><span class="cross">—</span></td></tr>
+            <tr><td>Create / delete folders</td><td><span class="check">✓</span></td><td><span class="cross">—</span></td></tr>
+            <tr><td>Upload files to folders</td><td><span class="check">✓</span></td><td><span class="cross">—</span></td></tr>
+            <tr><td>Assign folders to groups</td><td><span class="check">✓</span></td><td><span class="cross">—</span></td></tr>
+            <tr><td>View all folders (unrestricted)</td><td><span class="check">✓</span></td><td><span class="cross">—</span></td></tr>
+            <tr><td>View reports and analytics</td><td><span class="check">✓</span></td><td><span class="cross">—</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer>
+      <p>For technical setup and deployment instructions, see the project README.</p>
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  // Highlight active nav item on scroll
+  const sections = document.querySelectorAll('section[id], h3[id]');
+  const navItems = document.querySelectorAll('.nav-item');
+
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navItems.forEach(n => n.classList.remove('active'));
+        const match = document.querySelector(`.nav-item[href="#${entry.target.id}"]`);
+        if (match) match.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
