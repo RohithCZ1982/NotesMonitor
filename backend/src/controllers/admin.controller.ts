@@ -8,6 +8,7 @@ import { Download } from '../models/Download';
 import { cloudinary } from '../config/cloudinary';
 import { AuthRequest } from '../middleware/auth.middleware';
 import { sendSuccess, sendError } from '../utils/response';
+import { sendApprovalEmail, sendRejectionEmail } from '../utils/mailer';
 
 // ─── STUDENTS ────────────────────────────────────────────────────────────────
 
@@ -50,6 +51,14 @@ export async function updateStudentStatus(req: AuthRequest, res: Response): Prom
   ).populate('assignedGroups', 'name');
 
   if (!user) { sendError(res, 'Student not found', 404); return; }
+
+  // Send email notification (non-blocking — don't fail the request if email fails)
+  if (status === 'active') {
+    sendApprovalEmail(user.email, user.name).catch(() => {});
+  } else if (status === 'rejected') {
+    sendRejectionEmail(user.email, user.name).catch(() => {});
+  }
+
   sendSuccess(res, { user }, `Student ${status} successfully`);
 }
 

@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { BookOpen, Phone, Lock, User, Mail, MapPin, Eye, EyeOff } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { BookOpen, Phone, Lock, User, Mail, MapPin, Eye, EyeOff, Clock, CheckCircle } from 'lucide-react';
 import { authApi } from '../../api/auth';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../hooks/useToast';
 import Button from '../../components/ui/Button';
 import Input from '../../components/ui/Input';
+import { useNavigate } from 'react-router-dom';
 
 type Tab = 'login' | 'register';
 
@@ -13,6 +14,7 @@ export default function StudentAuth() {
   const [tab, setTab] = useState<Tab>('login');
   const [showPw, setShowPw] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [registered, setRegistered] = useState<{ name: string; mobile: string } | null>(null);
   const { login } = useAuth();
   const navigate = useNavigate();
   const toast = useToast();
@@ -45,13 +47,12 @@ export default function StudentAuth() {
     }
     setLoading(true);
     try {
-      const { token, user } = await authApi.studentRegister({
+      await authApi.studentRegister({
         name: regForm.name, mobile: regForm.mobile, email: regForm.email,
         address: regForm.address || undefined, password: regForm.password,
       });
-      login(token, user);
-      toast.success('Registration successful! Awaiting admin approval.');
-      navigate('/dashboard');
+      // Do NOT log in — show pending approval message instead
+      setRegistered({ name: regForm.name, mobile: regForm.mobile });
     } catch (err) {
       toast.apiError(err, 'Registration failed');
     } finally {
@@ -59,6 +60,72 @@ export default function StudentAuth() {
     }
   };
 
+  // ─── Registration success screen ─────────────────────────────────────────
+  if (registered) {
+    return (
+      <div className="min-h-screen bg-teal-50 flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          <div className="bg-white rounded-2xl shadow-xl shadow-teal-100 border border-teal-100 overflow-hidden">
+            {/* Top bar */}
+            <div className="bg-teal-600 h-2" />
+
+            <div className="px-8 py-10 text-center">
+              <div className="w-16 h-16 bg-amber-100 rounded-2xl flex items-center justify-center mx-auto mb-5">
+                <Clock size={30} className="text-amber-600" />
+              </div>
+
+              <h2 className="text-2xl font-bold text-gray-800 mb-2">
+                Registration Successful!
+              </h2>
+              <p className="text-gray-500 text-sm mb-6">
+                Hi <span className="font-semibold text-gray-700">{registered.name}</span>, your account has been created.
+              </p>
+
+              <div className="bg-amber-50 border border-amber-200 rounded-xl px-5 py-4 text-left mb-6">
+                <div className="flex items-start gap-3">
+                  <Clock size={18} className="text-amber-600 mt-0.5 shrink-0" />
+                  <div>
+                    <p className="text-sm font-semibold text-amber-800">Awaiting Admin Approval</p>
+                    <p className="text-xs text-amber-700 mt-1 leading-relaxed">
+                      Your account is pending approval. Once the admin approves your registration,
+                      you can log in using your mobile number and password.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-2 text-sm text-gray-500 mb-8">
+                <div className="flex items-center gap-2">
+                  <CheckCircle size={15} className="text-teal-500 shrink-0" />
+                  <span>Account created with mobile: <strong className="text-gray-700">{registered.mobile}</strong></span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <CheckCircle size={15} className="text-teal-500 shrink-0" />
+                  <span>You will be notified once approved</span>
+                </div>
+              </div>
+
+              <button
+                onClick={() => { setRegistered(null); setTab('login'); }}
+                className="w-full py-3 bg-teal-600 text-white rounded-xl font-medium hover:bg-teal-700 transition-colors"
+              >
+                Back to Login
+              </button>
+            </div>
+          </div>
+
+          <p className="text-center text-sm text-gray-500 mt-4">
+            Admin?{' '}
+            <Link to="/admin/login" className="text-teal-600 hover:text-teal-700 font-medium">
+              Admin login
+            </Link>
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // ─── Login / Register form ────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-teal-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
@@ -141,9 +208,6 @@ export default function StudentAuth() {
                     </button>
                   } autoComplete="new-password" />
                 <Button type="submit" loading={loading} fullWidth size="lg">Create Account</Button>
-                <p className="text-xs text-center text-gray-500">
-                  After registration, wait for admin approval before accessing notes.
-                </p>
               </form>
             )}
           </div>
