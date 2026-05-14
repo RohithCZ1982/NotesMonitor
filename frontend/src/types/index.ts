@@ -27,10 +27,10 @@ export interface User {
 export interface FileRecord {
   _id: string;
   originalName: string;
-  filename: string;
+  publicId: string;   // Cloudinary public_id
+  url: string;        // Cloudinary CDN URL (use this directly in <img>/<video>)
   mimetype: string;
   size: number;
-  path: string;
   uploadDate: string;
 }
 

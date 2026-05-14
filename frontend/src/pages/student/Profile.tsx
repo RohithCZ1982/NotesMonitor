@@ -25,7 +25,7 @@ export default function StudentProfile() {
       {/* Profile card */}
       <div className="card p-6">
         <div className="flex items-center gap-5 mb-6">
-          <div className="w-16 h-16 rounded-2xl bg-indigo-600 flex items-center justify-center text-2xl font-bold text-white shrink-0">
+          <div className="w-16 h-16 rounded-2xl bg-teal-600 flex items-center justify-center text-2xl font-bold text-white shrink-0">
             {student.name[0].toUpperCase()}
           </div>
           <div>
@@ -39,8 +39,8 @@ export default function StudentProfile() {
 
         <div className="space-y-3">
           <div className="flex items-center gap-3 py-3 border-b border-gray-100">
-            <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0">
-              <Phone size={15} className="text-indigo-600" />
+            <div className="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center shrink-0">
+              <Phone size={15} className="text-teal-600" />
             </div>
             <div>
               <p className="text-xs text-gray-400">Mobile Number</p>
@@ -49,8 +49,8 @@ export default function StudentProfile() {
           </div>
 
           <div className="flex items-center gap-3 py-3 border-b border-gray-100">
-            <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0">
-              <Mail size={15} className="text-indigo-600" />
+            <div className="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center shrink-0">
+              <Mail size={15} className="text-teal-600" />
             </div>
             <div>
               <p className="text-xs text-gray-400">Email Address</p>
@@ -60,8 +60,8 @@ export default function StudentProfile() {
 
           {student.address && (
             <div className="flex items-center gap-3 py-3 border-b border-gray-100">
-              <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0">
-                <MapPin size={15} className="text-indigo-600" />
+              <div className="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center shrink-0">
+                <MapPin size={15} className="text-teal-600" />
               </div>
               <div>
                 <p className="text-xs text-gray-400">Address</p>
@@ -71,8 +71,8 @@ export default function StudentProfile() {
           )}
 
           <div className="flex items-center gap-3 py-3 border-b border-gray-100">
-            <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0">
-              <Shield size={15} className="text-indigo-600" />
+            <div className="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center shrink-0">
+              <Shield size={15} className="text-teal-600" />
             </div>
             <div>
               <p className="text-xs text-gray-400">Account Status</p>
@@ -83,8 +83,8 @@ export default function StudentProfile() {
           </div>
 
           <div className="flex items-center gap-3 py-3">
-            <div className="w-8 h-8 rounded-lg bg-indigo-50 flex items-center justify-center shrink-0">
-              <User size={15} className="text-indigo-600" />
+            <div className="w-8 h-8 rounded-lg bg-teal-50 flex items-center justify-center shrink-0">
+              <User size={15} className="text-teal-600" />
             </div>
             <div>
               <p className="text-xs text-gray-400">Member Since</p>
@@ -99,9 +99,9 @@ export default function StudentProfile() {
       {/* Groups card */}
       <div className="card p-6">
         <div className="flex items-center gap-2 mb-4">
-          <UsersRound size={18} className="text-indigo-600" />
+          <UsersRound size={18} className="text-teal-600" />
           <h2 className="font-semibold text-gray-800">My Groups</h2>
-          <span className="ml-1 px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded-full text-xs font-medium">
+          <span className="ml-1 px-2 py-0.5 bg-teal-100 text-teal-700 rounded-full text-xs font-medium">
             {groups.length}
           </span>
         </div>
@@ -119,15 +119,15 @@ export default function StudentProfile() {
               typeof g === 'object' ? (
                 <div
                   key={g._id}
-                  className="flex items-center gap-3 p-3 bg-indigo-50 rounded-xl"
+                  className="flex items-center gap-3 p-3 bg-teal-50 rounded-xl"
                 >
-                  <div className="w-9 h-9 rounded-xl bg-indigo-600 flex items-center justify-center shrink-0">
+                  <div className="w-9 h-9 rounded-xl bg-teal-600 flex items-center justify-center shrink-0">
                     <UsersRound size={16} className="text-white" />
                   </div>
                   <div>
-                    <p className="font-medium text-indigo-900">{g.name}</p>
+                    <p className="font-medium text-teal-900">{g.name}</p>
                     {g.description && (
-                      <p className="text-xs text-indigo-600">{g.description}</p>
+                      <p className="text-xs text-teal-600">{g.description}</p>
                     )}
                   </div>
                 </div>

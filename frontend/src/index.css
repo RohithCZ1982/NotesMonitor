@@ -3,45 +3,30 @@
 @tailwind utilities;
 
 @layer base {
-  * {
-    box-sizing: border-box;
-  }
+  * { box-sizing: border-box; }
 
-  html {
-    scroll-behavior: smooth;
-  }
+  html { scroll-behavior: smooth; }
 
   body {
-    @apply text-gray-900;
+    @apply text-gray-900 bg-teal-50/40;
   }
 
-  ::-webkit-scrollbar {
-    @apply w-1.5 h-1.5;
-  }
-
-  ::-webkit-scrollbar-track {
-    @apply bg-gray-100;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    @apply bg-gray-300 rounded-full;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    @apply bg-gray-400;
-  }
+  ::-webkit-scrollbar       { @apply w-1.5 h-1.5; }
+  ::-webkit-scrollbar-track { @apply bg-teal-50; }
+  ::-webkit-scrollbar-thumb { @apply bg-teal-200 rounded-full; }
+  ::-webkit-scrollbar-thumb:hover { @apply bg-teal-300; }
 }
 
 @layer components {
   .card {
-    @apply bg-white rounded-xl shadow-sm border border-gray-100;
+    @apply bg-white rounded-xl shadow-sm border border-teal-100/60;
   }
 
   .input-base {
-    @apply w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm
-           focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
+    @apply w-full px-3 py-2.5 border border-gray-200 rounded-lg text-sm
+           focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent
            placeholder-gray-400 transition-all duration-150
-           disabled:bg-gray-50 disabled:cursor-not-allowed;
+           disabled:bg-gray-50 disabled:cursor-not-allowed bg-white;
   }
 
   .btn-base {

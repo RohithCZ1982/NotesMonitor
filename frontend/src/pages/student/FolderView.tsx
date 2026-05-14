@@ -28,7 +28,7 @@ function formatSize(bytes: number) {
 
 function FileIcon({ mimetype }: { mimetype: string }) {
   if (mimetype.startsWith('image/'))
-    return <FileImage size={18} className="text-indigo-500 shrink-0" />;
+    return <FileImage size={18} className="text-teal-500 shrink-0" />;
   if (mimetype.startsWith('video/'))
     return <FileVideo size={18} className="text-violet-500 shrink-0" />;
   return <File size={18} className="text-gray-400 shrink-0" />;
@@ -67,7 +67,7 @@ export default function FolderView() {
     return (
       <div className="text-center py-20">
         <p className="text-gray-500">Folder not found or not accessible.</p>
-        <Link to="/dashboard" className="text-indigo-600 text-sm mt-2 inline-block">
+        <Link to="/dashboard" className="text-teal-600 text-sm mt-2 inline-block">
           Back to folders
         </Link>
       </div>
@@ -78,7 +78,7 @@ export default function FolderView() {
     if (downloading.has(file._id)) return;
     startDownload(file._id);
     try {
-      await studentApi.downloadFile(folderId!, file.filename, file.originalName, file._id);
+      await studentApi.downloadFile(folderId!, file.url, file.originalName, file._id);
     } catch {
       toast.error(`Failed to download "${file.originalName}"`);
     } finally {
@@ -110,7 +110,7 @@ export default function FolderView() {
       {/* Back */}
       <Link
         to="/dashboard"
-        className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-indigo-600 transition-colors"
+        className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-teal-600 transition-colors"
       >
         <ArrowLeft size={15} />
         Back to folders
@@ -131,7 +131,7 @@ export default function FolderView() {
                 {folder.files.length} file{folder.files.length !== 1 ? 's' : ''}
               </span>
               {images.length > 0 && (
-                <span className="flex items-center gap-1.5 text-indigo-600">
+                <span className="flex items-center gap-1.5 text-teal-600">
                   <FileImage size={13} />
                   {images.length} image{images.length !== 1 ? 's' : ''}
                 </span>
@@ -148,7 +148,7 @@ export default function FolderView() {
                 typeof g === 'object' ? (
                   <span
                     key={g._id}
-                    className="px-2.5 py-0.5 bg-indigo-50 text-indigo-600 rounded-full text-xs font-medium"
+                    className="px-2.5 py-0.5 bg-teal-50 text-teal-600 rounded-full text-xs font-medium"
                   >
                     {g.name}
                   </span>
@@ -213,7 +213,7 @@ export default function FolderView() {
                       className={[
                         'text-sm font-medium text-gray-800 truncate leading-snug',
                         isPreviewable
-                          ? 'cursor-pointer hover:text-indigo-600 transition-colors'
+                          ? 'cursor-pointer hover:text-teal-600 transition-colors'
                           : '',
                       ].join(' ')}
                       onClick={() => isPreviewable && setPreviewIndex(idx)}
@@ -241,7 +241,7 @@ export default function FolderView() {
                     {isPreviewable && (
                       <button
                         onClick={() => setPreviewIndex(idx)}
-                        className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
+                        className="p-1.5 text-gray-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100"
                         title="Preview"
                       >
                         <Eye size={15} />
@@ -250,11 +250,11 @@ export default function FolderView() {
                     <button
                       onClick={() => handleDownloadFile(file)}
                       disabled={downloading.has(file._id)}
-                      className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors disabled:opacity-40"
+                      className="p-1.5 text-gray-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors disabled:opacity-40"
                       title="Download"
                     >
                       {downloading.has(file._id) ? (
-                        <span className="w-4 h-4 border-2 border-indigo-500 border-r-transparent rounded-full animate-spin inline-block" />
+                        <span className="w-4 h-4 border-2 border-teal-500 border-r-transparent rounded-full animate-spin inline-block" />
                       ) : (
                         <Download size={15} />
                       )}
@@ -272,8 +272,6 @@ export default function FolderView() {
         <FilePreview
           files={folder.files}
           initialIndex={previewIndex}
-          folderId={folderId!}
-          role="student"
           onClose={() => setPreviewIndex(null)}
           onDownload={handleDownloadFile}
         />

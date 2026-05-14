@@ -31,26 +31,23 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-teal-50 flex items-center justify-center p-4">
       <div className="w-full max-w-md">
-        {/* Card */}
-        <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-xl shadow-teal-100 overflow-hidden border border-teal-100">
           {/* Header */}
-          <div className="bg-gradient-to-r from-indigo-600 to-indigo-700 px-8 py-8 text-center">
+          <div className="bg-teal-600 px-8 py-8 text-center">
             <div className="w-14 h-14 bg-white/20 rounded-2xl flex items-center justify-center mx-auto mb-4">
               <BookOpen size={28} className="text-white" />
             </div>
             <h1 className="text-2xl font-bold text-white">NotesMonitor</h1>
-            <p className="text-indigo-200 text-sm mt-1">Admin Portal</p>
+            <p className="text-teal-100 text-sm mt-1">Admin Portal</p>
           </div>
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="px-8 py-8 space-y-5">
             <div>
               <h2 className="text-xl font-semibold text-gray-800">Sign in</h2>
-              <p className="text-sm text-gray-500 mt-0.5">
-                Access the admin dashboard
-              </p>
+              <p className="text-sm text-gray-500 mt-0.5">Access the admin dashboard</p>
             </div>
 
             <Input
@@ -64,43 +61,31 @@ export default function AdminLogin() {
               autoComplete="email"
             />
 
-            <div>
-              <Input
-                label="Password"
-                type={showPw ? 'text' : 'password'}
-                placeholder="Enter password"
-                value={form.password}
-                onChange={(e) => setForm({ ...form, password: e.target.value })}
-                leftIcon={<Lock size={16} />}
-                rightIcon={
-                  <button
-                    type="button"
-                    onClick={() => setShowPw(!showPw)}
-                    className="pointer-events-auto"
-                  >
-                    {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
-                  </button>
-                }
-                required
-                autoComplete="current-password"
-              />
-            </div>
+            <Input
+              label="Password"
+              type={showPw ? 'text' : 'password'}
+              placeholder="Enter password"
+              value={form.password}
+              onChange={(e) => setForm({ ...form, password: e.target.value })}
+              leftIcon={<Lock size={16} />}
+              rightIcon={
+                <button type="button" onClick={() => setShowPw(!showPw)} className="pointer-events-auto">
+                  {showPw ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              }
+              required
+              autoComplete="current-password"
+            />
 
-            <Button
-              type="submit"
-              loading={loading}
-              fullWidth
-              size="lg"
-              className="mt-2"
-            >
+            <Button type="submit" loading={loading} fullWidth size="lg" className="mt-2">
               Sign in to Dashboard
             </Button>
           </form>
         </div>
 
-        <p className="text-center text-sm text-slate-400 mt-6">
+        <p className="text-center text-sm text-gray-500 mt-6">
           Student?{' '}
-          <a href="/login" className="text-indigo-400 hover:text-indigo-300 font-medium">
+          <a href="/login" className="text-teal-600 hover:text-teal-700 font-medium">
             Go to student login
           </a>
         </p>

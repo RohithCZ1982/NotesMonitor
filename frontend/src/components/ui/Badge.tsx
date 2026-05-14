@@ -5,29 +5,26 @@ interface BadgeProps {
   className?: string;
 }
 
-const statusConfig: Record<
-  string,
-  { label: string; className: string }
-> = {
+const statusConfig: Record<string, { label: string; className: string }> = {
   active: {
     label: 'Active',
-    className: 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200',
+    className: 'bg-teal-50 text-teal-700 ring-1 ring-teal-200',
   },
   pending: {
     label: 'Pending',
-    className: 'bg-amber-100 text-amber-700 ring-1 ring-amber-200',
+    className: 'bg-amber-50 text-amber-700 ring-1 ring-amber-200',
   },
   rejected: {
     label: 'Rejected',
-    className: 'bg-red-100 text-red-700 ring-1 ring-red-200',
+    className: 'bg-red-50 text-red-600 ring-1 ring-red-200',
   },
   admin: {
     label: 'Admin',
-    className: 'bg-indigo-100 text-indigo-700 ring-1 ring-indigo-200',
+    className: 'bg-teal-100 text-teal-800 ring-1 ring-teal-300',
   },
   student: {
     label: 'Student',
-    className: 'bg-sky-100 text-sky-700 ring-1 ring-sky-200',
+    className: 'bg-sky-50 text-sky-700 ring-1 ring-sky-200',
   },
 };
 

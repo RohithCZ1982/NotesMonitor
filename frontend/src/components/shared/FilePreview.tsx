@@ -1,38 +1,25 @@
 import { useState, useEffect } from 'react';
 import { X, Download, ChevronLeft, ChevronRight, ZoomIn } from 'lucide-react';
 import { FileRecord } from '../../types';
-import { API_URL } from '../../api/client';
 
 interface FilePreviewProps {
   files: FileRecord[];
   initialIndex?: number;
-  folderId: string;
-  role?: 'admin' | 'student';
   onClose: () => void;
   onDownload?: (file: FileRecord) => void;
 }
 
-function getFileUrl(folderId: string, filename: string, role: 'admin' | 'student') {
-  const token = localStorage.getItem('nm_token');
-  return `${API_URL}/api/${role}/files/${folderId}/${filename}?t=${token}`;
-}
-
 export default function FilePreview({
-  files,
-  initialIndex = 0,
-  folderId,
-  role = 'student',
-  onClose,
-  onDownload,
+  files, initialIndex = 0, onClose, onDownload,
 }: FilePreviewProps) {
   const [current, setCurrent] = useState(initialIndex);
   const file = files[current];
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowLeft') setCurrent((c) => Math.max(0, c - 1));
+      if (e.key === 'ArrowLeft')  setCurrent((c) => Math.max(0, c - 1));
       if (e.key === 'ArrowRight') setCurrent((c) => Math.min(files.length - 1, c + 1));
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape')     onClose();
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
@@ -40,7 +27,6 @@ export default function FilePreview({
 
   const isImage = file.mimetype.startsWith('image/');
   const isVideo = file.mimetype.startsWith('video/');
-  const fileUrl = getFileUrl(folderId, file.filename, role);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/95 animate-fade-in">
@@ -75,12 +61,12 @@ export default function FilePreview({
         </div>
       </div>
 
-      {/* Main content */}
+      {/* Content */}
       <div className="flex items-center justify-center w-full h-full px-16 py-20">
         {isImage && (
           <img
             key={file._id}
-            src={fileUrl}
+            src={file.url}
             alt={file.originalName}
             className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
           />
@@ -88,7 +74,7 @@ export default function FilePreview({
         {isVideo && (
           <video
             key={file._id}
-            src={fileUrl}
+            src={file.url}
             controls
             autoPlay
             className="max-w-full max-h-full rounded-lg shadow-2xl"
@@ -106,7 +92,7 @@ export default function FilePreview({
         )}
       </div>
 
-      {/* Navigation arrows */}
+      {/* Arrow navigation */}
       {files.length > 1 && (
         <>
           <button
@@ -126,7 +112,7 @@ export default function FilePreview({
         </>
       )}
 
-      {/* Thumbnails strip */}
+      {/* Thumbnail strip */}
       {files.length > 1 && (
         <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2 px-4 overflow-x-auto">
           {files.map((f, idx) => (
@@ -134,17 +120,11 @@ export default function FilePreview({
               key={f._id}
               onClick={() => setCurrent(idx)}
               className={`shrink-0 w-12 h-12 rounded-lg overflow-hidden border-2 transition-all ${
-                idx === current
-                  ? 'border-indigo-400 scale-110'
-                  : 'border-transparent opacity-60 hover:opacity-100'
+                idx === current ? 'border-teal-400 scale-110' : 'border-transparent opacity-60 hover:opacity-100'
               }`}
             >
               {f.mimetype.startsWith('image/') ? (
-                <img
-                  src={getFileUrl(folderId, f.filename, role)}
-                  alt={f.originalName}
-                  className="w-full h-full object-cover"
-                />
+                <img src={f.url} alt={f.originalName} className="w-full h-full object-cover" />
               ) : (
                 <div className="w-full h-full bg-gray-700 flex items-center justify-center">
                   <span className="text-white text-xs">▶</span>

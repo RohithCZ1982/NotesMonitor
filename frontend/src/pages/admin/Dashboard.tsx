@@ -75,7 +75,7 @@ export default function AdminDashboard() {
           label="Total Students"
           value={ov?.totalStudents ?? 0}
           icon={Users}
-          color="bg-indigo-500"
+          color="bg-teal-500"
           linkTo="/admin/students"
         />
         <StatCard
@@ -146,7 +146,7 @@ export default function AdminDashboard() {
                 typeof dl.folder === 'object' ? dl.folder : null;
               return (
                 <div key={dl._id} className="flex items-center gap-3 px-5 py-3">
-                  <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-700 shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center text-xs font-bold text-teal-700 shrink-0">
                     {(student?.name?.[0] ?? '?').toUpperCase()}
                   </div>
                   <div className="min-w-0 flex-1">
@@ -188,7 +188,7 @@ export default function AdminDashboard() {
                   </p>
                   <p className="text-xs text-gray-400">{f.folderDate}</p>
                 </div>
-                <span className="text-sm font-semibold text-indigo-600">
+                <span className="text-sm font-semibold text-teal-600">
                   {f.count}
                 </span>
               </div>
@@ -203,7 +203,7 @@ export default function AdminDashboard() {
         <div className="flex flex-wrap gap-3">
           <Link
             to="/admin/folders"
-            className="flex items-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-teal-600 text-white text-sm font-medium rounded-lg hover:bg-teal-700 transition-colors"
           >
             <FolderOpen size={15} />
             Create Folder

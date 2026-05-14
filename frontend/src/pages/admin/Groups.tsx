@@ -147,7 +147,7 @@ export default function GroupsPage() {
                       setEditGroup(group);
                       setForm({ name: group.name, description: group.description ?? '' });
                     }}
-                    className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                    className="p-1.5 text-gray-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
                   >
                     <Pencil size={14} />
                   </button>
@@ -170,12 +170,12 @@ export default function GroupsPage() {
                   typeof s === 'object' ? (
                     <div
                       key={s._id}
-                      className="flex items-center gap-1.5 px-2 py-1 bg-indigo-50 rounded-full"
+                      className="flex items-center gap-1.5 px-2 py-1 bg-teal-50 rounded-full"
                     >
-                      <div className="w-4 h-4 rounded-full bg-indigo-200 flex items-center justify-center text-[10px] font-bold text-indigo-700">
+                      <div className="w-4 h-4 rounded-full bg-teal-200 flex items-center justify-center text-[10px] font-bold text-teal-700">
                         {s.name[0].toUpperCase()}
                       </div>
-                      <span className="text-xs text-indigo-700 max-w-[70px] truncate">
+                      <span className="text-xs text-teal-700 max-w-[70px] truncate">
                         {s.name}
                       </span>
                     </div>
@@ -294,7 +294,7 @@ export default function GroupsPage() {
                     className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-gray-50"
                   >
                     <div className="flex items-center gap-2">
-                      <div className="w-7 h-7 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-700">
+                      <div className="w-7 h-7 rounded-full bg-teal-100 flex items-center justify-center text-xs font-bold text-teal-700">
                         {s.name[0].toUpperCase()}
                       </div>
                       <div>

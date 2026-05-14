@@ -1,13 +1,7 @@
-import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
+import multer, { StorageEngine } from 'multer';
 import { Request } from 'express';
-
-const UPLOAD_ROOT = path.join(__dirname, '../../uploads');
-
-if (!fs.existsSync(UPLOAD_ROOT)) {
-  fs.mkdirSync(UPLOAD_ROOT, { recursive: true });
-}
+import { UploadApiResponse } from 'cloudinary';
+import { cloudinary } from '../config/cloudinary';
 
 const ALLOWED_MIMETYPES = new Set([
   'image/jpeg',
@@ -17,23 +11,51 @@ const ALLOWED_MIMETYPES = new Set([
   'video/quicktime',
 ]);
 
-const storage = multer.diskStorage({
-  destination: (req: Request, _file, cb) => {
-    const folderId = req.params.folderId;
-    if (!folderId) {
-      cb(new Error('Folder ID is required'), '');
-      return;
-    }
-    const dest = path.join(UPLOAD_ROOT, folderId);
-    fs.mkdirSync(dest, { recursive: true });
-    cb(null, dest);
-  },
-  filename: (_req, file, cb) => {
-    const unique = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-    const ext = path.extname(file.originalname).toLowerCase();
-    cb(null, `${unique}${ext}`);
-  },
-});
+class CloudinaryStorage implements StorageEngine {
+  _handleFile(
+    req: Request,
+    file: Express.Multer.File,
+    cb: (error?: Error | null, info?: Partial<Express.Multer.File>) => void
+  ) {
+    const folderId = req.params.folderId || 'general';
+    const resourceType = file.mimetype.startsWith('video/') ? 'video' : 'image';
+
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: `notes-monitor/${folderId}`,
+        resource_type: resourceType,
+        use_filename: false,
+        unique_filename: true,
+        overwrite: false,
+      },
+      (error: Error | undefined, result: UploadApiResponse | undefined) => {
+        if (error || !result) {
+          cb(error ?? new Error('Cloudinary upload failed'));
+          return;
+        }
+        cb(null, {
+          filename: result.public_id,   // used as publicId
+          path: result.secure_url,      // CDN URL
+          size: result.bytes,
+        } as Partial<Express.Multer.File>);
+      }
+    );
+
+    (file as any).stream.pipe(uploadStream);
+  }
+
+  _removeFile(
+    _req: Request,
+    file: Express.Multer.File,
+    cb: (error: Error | null) => void
+  ) {
+    const resourceType = file.mimetype.startsWith('video/') ? 'video' : 'image';
+    cloudinary.uploader
+      .destroy(file.filename, { resource_type: resourceType })
+      .then(() => cb(null))
+      .catch((err: Error) => cb(err));
+  }
+}
 
 function fileFilter(
   _req: Request,
@@ -43,19 +65,15 @@ function fileFilter(
   if (ALLOWED_MIMETYPES.has(file.mimetype)) {
     cb(null, true);
   } else {
-    cb(
-      new Error(
-        `File type "${file.mimetype}" is not allowed. Accepted: JPG, PNG, WEBP, MP4, MOV`
-      )
-    );
+    cb(new Error(`File type "${file.mimetype}" is not allowed. Accepted: JPG, PNG, WEBP, MP4, MOV`));
   }
 }
 
 export const upload = multer({
-  storage,
+  storage: new CloudinaryStorage(),
   fileFilter,
   limits: {
-    fileSize: 100 * 1024 * 1024, // 100 MB per file
+    fileSize: 100 * 1024 * 1024, // 100 MB
     files: 20,
   },
 });

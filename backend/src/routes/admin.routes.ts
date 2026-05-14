@@ -20,7 +20,6 @@ import {
   deleteFileFromFolder,
   assignFolderToGroups,
   getReports,
-  adminServeFile,
   adminDownloadZip,
 } from '../controllers/admin.controller';
 import {
@@ -82,8 +81,7 @@ router.post(
 // ─── Reports ────────────────────────────────────────────────────
 router.get('/reports', asyncHandler(getReports));
 
-// ─── File serving ───────────────────────────────────────────────
-router.get('/files/:folderId/:filename', asyncHandler(adminServeFile));
+// ─── ZIP download ───────────────────────────────────────────────
 router.get('/folders/:folderId/download-zip', asyncHandler(adminDownloadZip));
 
 export default router;

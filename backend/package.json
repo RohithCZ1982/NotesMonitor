@@ -7,11 +7,14 @@
     "dev": "node --dns-result-order=ipv4first node_modules/ts-node-dev/lib/bin.js --respawn --transpile-only src/server.ts",
     "build": "tsc",
     "start": "node --dns-result-order=ipv4first dist/server.js",
-    "reset-admin": "node --dns-result-order=ipv4first node_modules/ts-node/dist/bin.js --transpile-only src/scripts/reset-admin.ts"
+    "reset-admin": "node --dns-result-order=ipv4first node_modules/ts-node/dist/bin.js --transpile-only src/scripts/reset-admin.ts",
+    "cleanup-uploads": "node --dns-result-order=ipv4first node_modules/ts-node/dist/bin.js --transpile-only src/scripts/cleanup-old-uploads.ts"
   },
   "dependencies": {
     "archiver": "^6.0.1",
+    "axios": "^1.6.5",
     "bcryptjs": "^2.4.3",
+    "cloudinary": "^2.0.1",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",

@@ -21,8 +21,8 @@ function FolderCard({ folder, onClick }: { folder: Folder; onClick: () => void }
       className="card p-4 text-left hover:shadow-md hover:-translate-y-0.5 transition-all w-full"
     >
       <div className="flex items-start gap-3 mb-3">
-        <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center shrink-0">
-          <FolderOpen size={18} className="text-indigo-600" />
+        <div className="w-10 h-10 rounded-xl bg-teal-50 flex items-center justify-center shrink-0">
+          <FolderOpen size={18} className="text-teal-600" />
         </div>
         <div className="flex-1 min-w-0">
           <p className="font-semibold text-gray-800 line-clamp-2 text-sm leading-snug">
@@ -39,7 +39,7 @@ function FolderCard({ folder, onClick }: { folder: Folder; onClick: () => void }
       <div className="flex items-center gap-3 mb-3">
         {imageCount > 0 && (
           <div className="flex items-center gap-1 text-xs text-gray-500">
-            <Image size={12} className="text-indigo-400" />
+            <Image size={12} className="text-teal-400" />
             {imageCount} image{imageCount !== 1 ? 's' : ''}
           </div>
         )}
@@ -60,7 +60,7 @@ function FolderCard({ folder, onClick }: { folder: Folder; onClick: () => void }
           typeof g === 'object' ? (
             <span
               key={g._id}
-              className="px-2 py-0.5 bg-indigo-50 text-indigo-600 rounded-full text-xs"
+              className="px-2 py-0.5 bg-teal-50 text-teal-600 rounded-full text-xs"
             >
               {g.name}
             </span>

@@ -86,7 +86,7 @@ export default function StudentsPage() {
               className={[
                 'px-3 py-1.5 rounded-md text-sm font-medium transition-all',
                 statusFilter === key
-                  ? 'bg-white text-indigo-700 shadow-sm'
+                  ? 'bg-white text-teal-700 shadow-sm'
                   : 'text-gray-600 hover:text-gray-800',
               ].join(' ')}
             >
@@ -128,12 +128,12 @@ export default function StudentsPage() {
                   >
                     <td className="px-5 py-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-700 shrink-0">
+                        <div className="w-8 h-8 rounded-full bg-teal-100 flex items-center justify-center text-xs font-bold text-teal-700 shrink-0">
                           {student.name[0].toUpperCase()}
                         </div>
                         <div>
                           <p
-                            className="font-medium text-gray-800 cursor-pointer hover:text-indigo-600"
+                            className="font-medium text-gray-800 cursor-pointer hover:text-teal-600"
                             onClick={() => setSelected(student)}
                           >
                             {student.name}
@@ -152,7 +152,7 @@ export default function StudentsPage() {
                             typeof g === 'object' ? (
                               <span
                                 key={g._id}
-                                className="px-2 py-0.5 bg-indigo-50 text-indigo-700 rounded text-xs"
+                                className="px-2 py-0.5 bg-teal-50 text-teal-700 rounded text-xs"
                               >
                                 {g.name}
                               </span>
@@ -242,7 +242,7 @@ export default function StudentsPage() {
         {selected && (
           <div className="px-6 py-4 space-y-4">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-indigo-100 flex items-center justify-center text-xl font-bold text-indigo-700">
+              <div className="w-14 h-14 rounded-2xl bg-teal-100 flex items-center justify-center text-xl font-bold text-teal-700">
                 {selected.name[0].toUpperCase()}
               </div>
               <div>
@@ -279,7 +279,7 @@ export default function StudentsPage() {
                     typeof g === 'object' ? (
                       <span
                         key={g._id}
-                        className="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-full text-xs font-medium"
+                        className="px-2.5 py-1 bg-teal-50 text-teal-700 rounded-full text-xs font-medium"
                       >
                         {g.name}
                       </span>

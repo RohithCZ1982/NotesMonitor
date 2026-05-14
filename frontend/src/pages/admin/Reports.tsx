@@ -53,7 +53,7 @@ export default function ReportsPage() {
       <div>
         <h2 className="text-sm font-semibold text-gray-500 uppercase mb-3">Overview</h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <StatCard label="Total Students" value={ov?.totalStudents ?? 0} icon={Users} color="bg-indigo-500" />
+          <StatCard label="Total Students" value={ov?.totalStudents ?? 0} icon={Users} color="bg-teal-500" />
           <StatCard label="Active" value={ov?.activeStudents ?? 0} icon={UserCheck} color="bg-emerald-500" />
           <StatCard label="Pending" value={ov?.pendingStudents ?? 0} icon={Clock} color="bg-amber-500" />
           <StatCard label="Rejected" value={ov?.rejectedStudents ?? 0} icon={UserX} color="bg-red-400" />
@@ -87,7 +87,7 @@ export default function ReportsPage() {
                   <p className="text-sm font-medium text-gray-700 truncate">{f.folderName}</p>
                   <p className="text-xs text-gray-400">{f.folderDate}</p>
                 </div>
-                <div className="flex items-center gap-1 text-indigo-600 font-semibold text-sm">
+                <div className="flex items-center gap-1 text-teal-600 font-semibold text-sm">
                   <Download size={13} />
                   {f.count}
                 </div>
@@ -116,7 +116,7 @@ export default function ReportsPage() {
                   </div>
                   <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-indigo-500 rounded-full"
+                      className="h-full bg-teal-500 rounded-full"
                       style={{ width: `${pct}%` }}
                     />
                   </div>
@@ -157,7 +157,7 @@ export default function ReportsPage() {
                   <tr key={dl._id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-5 py-3">
                       <div className="flex items-center gap-2">
-                        <div className="w-7 h-7 rounded-full bg-indigo-100 flex items-center justify-center text-xs font-bold text-indigo-700 shrink-0">
+                        <div className="w-7 h-7 rounded-full bg-teal-100 flex items-center justify-center text-xs font-bold text-teal-700 shrink-0">
                           {(student?.name?.[0] ?? '?').toUpperCase()}
                         </div>
                         <div>

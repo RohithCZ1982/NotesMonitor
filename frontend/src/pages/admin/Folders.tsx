@@ -201,8 +201,8 @@ export default function FoldersPage() {
                 key={folder._id}
                 className="flex items-center gap-4 px-5 py-4 hover:bg-gray-50 transition-colors"
               >
-                <div className="w-10 h-10 rounded-xl bg-indigo-50 flex items-center justify-center shrink-0">
-                  <FolderOpen size={18} className="text-indigo-600" />
+                <div className="w-10 h-10 rounded-xl bg-teal-50 flex items-center justify-center shrink-0">
+                  <FolderOpen size={18} className="text-teal-600" />
                 </div>
 
                 <div className="flex-1 min-w-0">
@@ -213,7 +213,7 @@ export default function FoldersPage() {
                       {folder.files.length} file{folder.files.length !== 1 ? 's' : ''}
                     </span>
                     {Array.isArray(folder.assignedGroups) && folder.assignedGroups.length > 0 && (
-                      <span className="text-xs text-indigo-600">
+                      <span className="text-xs text-teal-600">
                         {folder.assignedGroups.length} group{folder.assignedGroups.length !== 1 ? 's' : ''}
                       </span>
                     )}
@@ -223,7 +223,7 @@ export default function FoldersPage() {
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => setOpenFolder(folder)}
-                    className="p-1.5 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                    className="p-1.5 text-gray-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
                     title="Open folder"
                   >
                     <FolderOpen size={15} />
@@ -356,7 +356,7 @@ export default function FoldersPage() {
                         : prev.filter((id) => id !== group._id)
                     );
                   }}
-                  className="w-4 h-4 rounded text-indigo-600"
+                  className="w-4 h-4 rounded text-teal-600"
                 />
                 <div>
                   <p className="text-sm font-medium">{group.name}</p>
@@ -396,8 +396,8 @@ export default function FoldersPage() {
               className={[
                 'border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-all',
                 isDragActive
-                  ? 'border-indigo-400 bg-indigo-50'
-                  : 'border-gray-200 hover:border-indigo-300 hover:bg-gray-50',
+                  ? 'border-teal-400 bg-teal-50'
+                  : 'border-gray-200 hover:border-teal-300 hover:bg-gray-50',
               ].join(' ')}
             >
               <input {...getInputProps()} />
@@ -419,7 +419,7 @@ export default function FoldersPage() {
                     className="flex items-center gap-2 px-3 py-2 bg-gray-50 rounded-lg text-sm"
                   >
                     {f.type.startsWith('image/') ? (
-                      <Image size={14} className="text-indigo-500" />
+                      <Image size={14} className="text-teal-500" />
                     ) : (
                       <Video size={14} className="text-violet-500" />
                     )}
@@ -442,7 +442,7 @@ export default function FoldersPage() {
                     </div>
                     <div className="h-1.5 bg-gray-200 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-indigo-600 rounded-full transition-all"
+                        className="h-full bg-teal-600 rounded-full transition-all"
                         style={{ width: `${uploadProgress}%` }}
                       />
                     </div>
@@ -475,8 +475,8 @@ export default function FoldersPage() {
                 {openFolder?.files.map((file, idx) => {
                   const isImg = file.mimetype.startsWith('image/');
                   const isVid = file.mimetype.startsWith('video/');
-                  const token = localStorage.getItem('nm_token');
-                  const previewUrl = `${API_URL}/api/admin/files/${openFolder._id}/${file.filename}?t=${token}`;
+                  
+                  const previewUrl = file.url;
 
                   return (
                     <div
@@ -492,7 +492,7 @@ export default function FoldersPage() {
                         />
                       )}
                       {isVid && (
-                        <div className="w-full h-full flex flex-col items-center justify-center bg-slate-800">
+                        <div className="w-full h-full flex flex-col items-center justify-center bg-gray-800">
                           <Video size={28} className="text-white/70" />
                           <span className="text-xs text-white/50 mt-1 px-2 text-center truncate w-full">
                             {file.originalName}
@@ -561,8 +561,6 @@ export default function FoldersPage() {
         <FilePreview
           files={previewState.folder.files}
           initialIndex={previewState.index}
-          folderId={previewState.folder._id}
-          role="admin"
           onClose={() => setPreviewState(null)}
         />
       )}
