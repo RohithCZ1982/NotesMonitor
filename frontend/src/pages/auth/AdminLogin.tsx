@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { BookOpen, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { authApi } from '../../api/auth';
@@ -85,9 +86,9 @@ export default function AdminLogin() {
 
         <p className="text-center text-sm text-gray-500 mt-6">
           Student?{' '}
-          <a href="/login" className="text-teal-600 hover:text-teal-700 font-medium">
+          <Link to="/login" className="text-teal-600 hover:text-teal-700 font-medium">
             Go to student login
-          </a>
+          </Link>
         </p>
       </div>
     </div>
